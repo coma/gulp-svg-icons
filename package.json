@@ -5,6 +5,7 @@
     "version"        : "0.0.1",
     "license"        : "MIT",
     "private"        : false,
+    "main"           : "index.js",
     "authors"     : [
         "Eduardo García Sanz <eduardo@comakai.com>"
     ],
