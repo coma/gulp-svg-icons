@@ -47,19 +47,21 @@ module.exports = function (iconsDir, options) {
 			return name;
 		};
 
-	var style = settings.style;
-	var icons = '';
-	var boxes = {};
-	var index;
+	var style        = settings.style;
+	var icons        = '';
+	var boxes        = {};
+	var placeholders = [];
 
 	var stream = map(function(file, done) {
 
-		if (file.path === settings.indexPath) {
+		var contents = String(file.contents);
 
-			index = file;
+		if (contents.indexOf(settings.placeholder) > -1) {
+
+			placeholders.push(file);
 		}
 
-		file.contents = new Buffer(String(file.contents).replace(/<icon-([a-z0-9\-]+)>/gi, function(match, name) {
+		file.contents = new Buffer(contents.replace(/<icon-([a-z0-9\-]+)>/gi, function(match, name) {
 
 			var id = prefix(name);
 
@@ -79,12 +81,15 @@ module.exports = function (iconsDir, options) {
 
 	stream.on('end', function() {
 
-		index.contents = new Buffer(
-			String(index.contents)
-			.replace(
-				settings.placeholder,
-				'<svg style="display:none;"><defs>' + icons + '</defs></svg>'
-		));
+		icons = '<svg style="display:none;"><defs>' + icons + '</defs></svg>';
+
+		placeholders.forEach(function(file) {
+
+			file.contents = new Buffer(
+				String(file.contents)
+				.replace(settings.placeholder, icons)
+			);
+		});
 	});
 
 	return stream;
