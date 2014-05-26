@@ -18,5 +18,7 @@
         "map-stream" : "~0"
     },
     "devDependencies": {
+        "mocha"      : "~1",
+        "gulp"       : "~3"
     }
 }
