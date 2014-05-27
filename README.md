@@ -25,7 +25,7 @@ where "trophy" is the name of the icon's file (path/to/the/icons/trophy.svg); an
 <!-- icons -->
 ```
 
-and then just invoke it through gulp:
+and then invoke it through gulp:
 
 ```javascript
 var gulp  = require('gulp');
