@@ -1,6 +1,7 @@
 const PLUGIN_NAME = 'gulp-svg-icons';
 
 var fs     = require('fs');
+var path   = require('path');
 var extend = require('node.extend');
 var gutil  = require('gulp-util');
 var map    = require('map-stream');
@@ -67,7 +68,7 @@ module.exports = function (iconsDir, options) {
 
 			if (!boxes.hasOwnProperty(name)) {
 
-				var raw = String(fs.readFileSync(iconsDir + '/' + name + '.svg'));
+				var raw = String(fs.readFileSync(path.join(iconsDir, name + '.svg')));
 
 				boxes[name] = /\sviewBox="([0-9\-\s]+)"/.exec(raw)[1];
 				icons += '<g id="' + id + '">' + /<svg[^>]*>([\s\S]*?)<\/svg>/gi.exec(raw)[1] + '</g>';

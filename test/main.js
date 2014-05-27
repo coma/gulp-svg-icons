@@ -1,22 +1,41 @@
-var icons = require('../');
-var gulp = require('gulp');
+var path   = require('path');
+var fs     = require('fs');
+var icons  = require('../');
+var gulp   = require('gulp');
 var assert = require('assert');
 
-var fixtures = __dirname + '/fixtures/';
+var fixtures     = path.join(__dirname, 'fixtures');
+var expectations = path.join(__dirname, 'expected');
 
 describe('gulp-svg-icons', function() {
 
 	describe('works', function() {
 
-		it('should save without error', function(done) {
+		it('should work', function(done) {
+			
+			var a = icons(path.join(fixtures, 'icons'));
+			var files = [];
+			
+			a.on('data', function(file) {
+
+				files.push(file);
+			});
+			
+			a.on('close', function() {
+
+				files.forEach(function(file) {
+
+					var expected = fs.readFileSync(path.join(expectations, file.relative));
+					assert.equal(String(expected), String(file.contents));
+				});
+
+				assert.equal(2, files.length);
+				done();
+			});
 
 			gulp
-	        .src(fixtures + 'html/*.html')
-	        .pipe(icons(fixtures + 'icons'));
-
-	        done();
-
-			//assert.equal(-1, [1,2,3].indexOf(5));
+		        .src(path.join(fixtures, 'html', '*.html'))
+		        .pipe(a);
 		});
 	});
 });
