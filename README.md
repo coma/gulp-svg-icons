@@ -10,8 +10,8 @@ Install
 npm install gulp-svg-icons
 ```
 
-How to use
-----------
+Usage
+-----
 
 In your HTML sources just add icons like:
 
