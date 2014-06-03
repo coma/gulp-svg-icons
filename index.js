@@ -7,27 +7,18 @@ var gutil  = require('gulp-util');
 var map    = require('map-stream');
 var Error  = gutil.PluginError;
 
-var error = function(right, message, stop) {
+var error = function(right, message) {
 
 	if (!right) {
 
-		var e = new Error(PLUGIN_NAME, message);
-
-		if (stop) {
-
-			throw e;
-		}
-
-		return e;
+		throw new Error(PLUGIN_NAME, message);
 	}
 };
 
-module.exports = function (iconsDir, options) {
+var Icons = function(dir, options) {
 
-	var self = this;
-
-	error(iconsDir.constructor === String, 'Missing iconsDir option', true);
-	error(fs.existsSync(iconsDir), 'iconsDir path not found (' + iconsDir + ')', true);
+	error(dir.constructor === String, 'Missing iconsDir option', true);
+	error(fs.existsSync(dir), 'iconsDir path not found (' + dir + ')', true);
 
 	var settings = extend({
 		prefix     : 'icon',
@@ -38,7 +29,9 @@ module.exports = function (iconsDir, options) {
 		}
 	}, options);
 
-	var prefix = settings.prefix.constructor === String 
+	this.dir = dir;
+	this.settings = settings;
+	this.prefix = settings.prefix.constructor === String 
 		? function(name) {
 
 			return settings.prefix + '-' + name;
@@ -48,50 +41,66 @@ module.exports = function (iconsDir, options) {
 			return name;
 		};
 
-	var style        = settings.style;
-	var icons        = '';
-	var boxes        = {};
-	var placeholders = [];
+	this._init();
+};
 
-	var stream = map(function(file, done) {
+Icons.prototype._init = function(name) {
+
+	this.boxes = {};
+	this.icons = '';
+};
+
+Icons.prototype._getBox = function(name) {
+
+	if (!this.boxes.hasOwnProperty(name)) {
+
+		var raw = String(fs.readFileSync(path.join(this.dir, name + '.svg')));
+
+		this.boxes[name] = /\sviewBox="([0-9\-\s]+)"/.exec(raw)[1];
+		this.icons += '<g id="' + this.prefix(name) + '">' + /<svg[^>]*>([\s\S]*?)<\/svg>/gi.exec(raw)[1] + '</g>';
+	}
+
+	return this.boxes[name];
+};
+
+Icons.prototype.replace = function() {
+
+	var self  = this;
+
+	return map(function(file, done) {
 
 		var contents = String(file.contents);
 
-		if (contents.indexOf(settings.placeholder) > -1) {
-
-			placeholders.push(file);
-		}
-
 		file.contents = new Buffer(contents.replace(/<icon-([a-z0-9\-]+)>/gi, function(match, name) {
 
-			var id = prefix(name);
-
-			if (!boxes.hasOwnProperty(name)) {
-
-				var raw = String(fs.readFileSync(path.join(iconsDir, name + '.svg')));
-
-				boxes[name] = /\sviewBox="([0-9\-\s]+)"/.exec(raw)[1];
-				icons += '<g id="' + id + '">' + /<svg[^>]*>([\s\S]*?)<\/svg>/gi.exec(raw)[1] + '</g>';
-			}
-
-			return '<svg class="' + style(name) + '" viewBox="' + boxes[name] + '"><use xlink:href="#' + id + '"></use></svg>';
+			return '<svg class="' + self.settings.style(name) + '" viewBox="' + self._getBox(name) + '"><use xlink:href="#' + self.prefix(name) + '"></use></svg>';
 		}));
+
+		done(null, file);
+	});
+};
+
+Icons.prototype.inject = function() {
+
+	var self = this;
+	var icons = '<svg style="display:none;"><defs>' + self.icons + '</defs></svg>';
+
+	var stream = map(function(file, done) {
+
+		file.contents = new Buffer(
+			String(file.contents)
+			.replace(self.settings.placeholder, icons)
+		);
 
 		done(null, file);
 	});
 
 	stream.on('end', function() {
 
-		icons = '<svg style="display:none;"><defs>' + icons + '</defs></svg>';
-
-		placeholders.forEach(function(file) {
-
-			file.contents = new Buffer(
-				String(file.contents)
-				.replace(settings.placeholder, icons)
-			);
-		});
+		self._init();
 	});
 
 	return stream;
 };
+
+module.exports = Icons;
