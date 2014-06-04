@@ -1,27 +1,30 @@
 var path   = require('path');
 var fs     = require('fs');
-var icons  = require('../');
 var gulp   = require('gulp');
+var Icons  = require('../');
 var assert = require('assert');
 
+var expectations = path.join(__dirname, 'expectations');
 var fixtures     = path.join(__dirname, 'fixtures');
-var expectations = path.join(__dirname, 'expected');
+var svgs         = path.join(fixtures, 'icons');
 
 describe('gulp-svg-icons', function() {
 
-	describe('works', function() {
+	var icons = new Icons(svgs);
+
+	describe('replace', function() {
 
 		it('should work', function(done) {
 			
-			var a = icons(path.join(fixtures, 'icons'));
 			var files = [];
+			var replace = icons.replace();
 			
-			a.on('data', function(file) {
+			replace.on('data', function(file) {
 
 				files.push(file);
 			});
 			
-			a.on('close', function() {
+			replace.on('close', function() {
 
 				files.forEach(function(file) {
 
@@ -35,7 +38,33 @@ describe('gulp-svg-icons', function() {
 
 			gulp
 		        .src(path.join(fixtures, 'html', '*.html'))
-		        .pipe(a);
+		        .pipe(replace);
+		});
+	});
+
+	describe('inject', function() {
+
+		it('should work', function(done) {
+			
+			var last;
+			var inject = icons.inject();
+			
+			inject.on('data', function(file) {
+
+				last = file;
+			});
+			
+			inject.on('close', function() {
+
+				var expected = fs.readFileSync(path.join(expectations, last.relative));
+				assert.equal(String(expected), String(last.contents));
+
+				done();
+			});
+
+			gulp
+		        .src(path.join(expectations, 'last.html'))
+		        .pipe(inject);
 		});
 	});
 });

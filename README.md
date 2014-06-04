@@ -29,14 +29,26 @@ and then invoke it through gulp:
 
 ```javascript
 var gulp  = require('gulp');
-var icons = require('gulp-svg-icons')
+var Icons = require('../');
 
-gulp.task('task', function () {
+var icons = new Icons('src/icons');
 
-    gulp
-    	.src('path/to/the/html/*.html')
-        .pipe(icons('path/to/the/icons'))
-        .pipe(gulp.dest('dist'));
+gulp.task('replace', function() {
+
+	var htmls = path.join(fixtures, 'html', '**', '*.html');
+
+	return gulp
+	        .src('src/html/*.html')
+	        .pipe(icons.replace())
+	        .pipe(gulp.dest('web'));
+});
+
+gulp.task('default', ['replace'], function() {
+
+	return gulp
+	        .src('web/index.html')
+	        .pipe(icons.inject())
+	        .pipe(gulp.dest('web'));
 });
 ```
 
