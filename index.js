@@ -71,7 +71,7 @@ Icons.prototype.replace = function() {
 
 		var contents = String(file.contents);
 
-		file.contents = new Buffer(contents.replace(/<icon-([a-z0-9\-]+)>/gi, function(match, name) {
+		file.contents = new Buffer(contents.replace(/<icon-([a-z0-9\-]+)\/?>(\s*<\/icon-[a-z0-9\-]+>)?/gi, function(match, name) {
 
 			return '<svg class="' + self.settings.style(name) + '" viewBox="' + self._getBox(name) + '"><use xlink:href="#' + self.prefix(name) + '"></use></svg>';
 		}));
