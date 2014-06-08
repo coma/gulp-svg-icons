@@ -29,7 +29,7 @@ and then invoke it through gulp:
 
 ```javascript
 var gulp  = require('gulp');
-var Icons = require('../');
+var Icons = require('gulp-svg-icons');
 
 var icons = new Icons('src/icons');
 
