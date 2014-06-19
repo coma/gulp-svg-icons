@@ -16,7 +16,13 @@ Usage
 In your HTML sources just add icons like:
 
 ```html
-<icon-trophy>
+<icon-trophy class="red">
+```
+
+and it will be replaced by:
+
+```html
+<svg class="icon red" viewBox="0 0 30 32"><use xlink:href="#icon-trophy"></use></svg>
 ```
 
 where "trophy" is the name of the icon's file (path/to/the/icons/trophy.svg); and use the placeholder where you want the definitions (in the index.html for example, in case that you are building a SPA):

@@ -29,7 +29,7 @@ describe('gulp-svg-icons', function() {
 				files.forEach(function(file) {
 
 					var expected = fs.readFileSync(path.join(expectations, file.relative));
-					assert.equal(String(expected), String(file.contents));
+					assert.equal(String(file.contents), String(expected));
 				});
 
 				assert.equal(2, files.length);
