@@ -32,7 +32,7 @@ describe('gulp-svg-icons', function() {
 					assert.equal(String(file.contents), String(expected));
 				});
 
-				assert.equal(2, files.length);
+				assert.equal(3, files.length);
 				done();
 			});
 
@@ -65,6 +65,41 @@ describe('gulp-svg-icons', function() {
 			gulp
 		        .src(path.join(expectations, 'last.html'))
 		        .pipe(inject);
+		});
+	});
+});
+
+describe('gulp-svg-icons external', function() {
+
+	var uri   = '/icons.svg';
+	var icons = new Icons(svgs, {
+		external: function(name) {
+
+			return uri;
+		}
+	});
+
+	describe('replace', function() {
+
+		it('should work', function(done) {
+			
+			var file;
+			var replace = icons.replace();
+			
+			replace.on('data', function(c) {
+
+				file = c;
+			});
+			
+			replace.on('close', function() {
+
+				assert.equal(String(file.contents), '<svg class="icon" viewBox="0 0 28 32"><use xlink:href="' + uri + '#icon-clock"></use></svg>');
+				done();
+			});
+
+			gulp
+		        .src(path.join(fixtures, 'html', 'c.html'))
+		        .pipe(replace);
 		});
 	});
 });

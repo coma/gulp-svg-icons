@@ -26,6 +26,10 @@ var Icons = function(dir, options) {
 		style      : function(name) {
 
 			return 'icon';
+		},
+		external   : function(name) {
+
+			return '';
 		}
 	}, options);
 
@@ -75,7 +79,18 @@ Icons.prototype.replace = function() {
 
 			style = style ? ' ' + style : '';
 
-			return '<svg class="' + self.settings.style(name) + style + '" viewBox="' + self._getBox(name) + '"><use xlink:href="#' + self.prefix(name) + '"></use></svg>';
+			return [
+				'<svg class="',
+				self.settings.style(name),
+				style,
+				'" viewBox="',
+				self._getBox(name),
+				'"><use xlink:href="',
+				self.settings.external(name),
+				'#',
+				self.prefix(name),
+				'"></use></svg>'
+			].join('');
 		}));
 
 		done(null, file);
