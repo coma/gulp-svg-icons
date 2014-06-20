@@ -1,4 +1,4 @@
-gulp-svg-icons [![Build Status](https://travis-ci.org/coma/gulp-svg-icons.png?branch=master)](https://travis-ci.org/coma/gulp-svg-icons)
+gulp-svg-icons [![Build Status][travis-image]][travis-url] [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-image]][depstat-url]
 ==============
 
 Inserting SVG icons was never so easy.
@@ -76,3 +76,12 @@ A function which will receive every icon name and should return the desired CSS 
 ### external
 
 A function which will receive every icon name and should return the desired path to the icons defs, useful to keep those in an external file (and share them between documents, [see this](http://css-tricks.com/svg-use-external-source/)). The default will return just an empty string, meaning that the icons are supposed to be defined in the same document.
+
+[travis-url]: https://travis-ci.org/coma/gulp-svg-icons
+[travis-image]: https://travis-ci.org/coma/gulp-svg-icons.png?branch=master
+
+[npm-url]: https://npmjs.org/package/gulp-svg-icons
+[npm-image]: https://badge.fury.io/js/gulp-svg-icons.png
+
+[depstat-url]: https://david-dm.org/coma/gulp-svg-icons
+[depstat-image]: https://david-dm.org/coma/gulp-svg-icons.png
