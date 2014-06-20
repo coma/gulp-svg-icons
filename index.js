@@ -50,21 +50,28 @@ var Icons = function(dir, options) {
 
 Icons.prototype._init = function(name) {
 
-	this.boxes = {};
-	this.icons = '';
+	this._icons = '';
+	this._collected = [];
 };
 
-Icons.prototype._getBox = function(name) {
+Icons.prototype._collect = function(name) {
 
-	if (!this.boxes.hasOwnProperty(name)) {
+	if (this._collected.indexOf(name) < 1) {
 
 		var raw = String(fs.readFileSync(path.join(this.dir, name + '.svg')));
 
-		this.boxes[name] = /\sviewBox="([0-9\-\s]+)"/.exec(raw)[1];
-		this.icons += '<g id="' + this.prefix(name) + '">' + /<svg[^>]*>([\s\S]*?)<\/svg>/gi.exec(raw)[1] + '</g>';
-	}
+		this._icons += [
+			'<symbol id="',
+			 this.prefix(name),
+			 '" ',
+			 /\s(viewBox="[0-9\-\s]+")/.exec(raw)[1],
+			 '>',
+			 /<svg[^>]*>([\s\S]*?)<\/svg>/gi.exec(raw)[1],
+			 '</symbol>'
+		 ].join('');
 
-	return this.boxes[name];
+		 this._collected.push(name);
+	}
 };
 
 Icons.prototype.replace = function() {
@@ -78,13 +85,12 @@ Icons.prototype.replace = function() {
 		file.contents = new Buffer(contents.replace(/<icon-([a-z0-9\-]+)(?:\s+class="([a-z0-9\-\_ ]*)")?\/?>(?:\s*<\/icon-[a-z0-9\-]+>)?/gi, function(match, name, style) {
 
 			style = style ? ' ' + style : '';
+			self._collect(name);
 
 			return [
 				'<svg class="',
 				self.settings.style(name),
 				style,
-				'" viewBox="',
-				self._getBox(name),
 				'"><use xlink:href="',
 				self.settings.external(name),
 				'#',
@@ -100,7 +106,7 @@ Icons.prototype.replace = function() {
 Icons.prototype.inject = function() {
 
 	var self = this;
-	var icons = '<svg style="display:none;"><defs>' + self.icons + '</defs></svg>';
+	var icons = '<svg style="display:none;">' + self._icons + '</svg>';
 
 	var stream = map(function(file, done) {
 

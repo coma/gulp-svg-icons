@@ -93,7 +93,7 @@ describe('gulp-svg-icons external', function() {
 			
 			replace.on('close', function() {
 
-				assert.equal(String(file.contents), '<svg class="icon" viewBox="0 0 28 32"><use xlink:href="' + uri + '#icon-clock"></use></svg>');
+				assert.equal(String(file.contents), '<svg class="icon"><use xlink:href="' + uri + '#icon-clock"></use></svg>');
 				done();
 			});
 

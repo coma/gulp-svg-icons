@@ -22,10 +22,10 @@ In your HTML sources just add icons like:
 and it will be replaced by:
 
 ```html
-<svg class="icon red" viewBox="0 0 30 32"><use xlink:href="#icon-trophy"></use></svg>
+<svg class="icon red"><use xlink:href="#icon-trophy"></use></svg>
 ```
 
-where "trophy" is the name of the icon's file (path/to/the/icons/trophy.svg); and use the placeholder where you want the definitions (in the index.html for example, in case that you are building a SPA):
+where "trophy" is the name of the icon's file (path/to/the/icons/trophy.svg); and use the placeholder where you want the symbol definitions (in the index.html for example, in case that you are building a SPA):
 
 ```html
 <!-- icons -->
