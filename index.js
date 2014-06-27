@@ -64,7 +64,7 @@ Icons.prototype._collect = function(name) {
 			'<symbol id="',
 			 this.prefix(name),
 			 '" ',
-			 /\s(viewBox="[0-9\-\s]+")/.exec(raw)[1],
+			 /\s(viewBox="[0-9\-\s\.]+")/.exec(raw)[1],
 			 '>',
 			 /<svg[^>]*>([\s\S]*?)<\/svg>/gi.exec(raw)[1],
 			 '</symbol>'
