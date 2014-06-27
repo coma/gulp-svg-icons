@@ -56,7 +56,7 @@ Icons.prototype._init = function(name) {
 
 Icons.prototype._collect = function(name) {
 
-	if (this._collected.indexOf(name) < 1) {
+	if (this._collected.indexOf(name) < 0) {
 
 		var raw = String(fs.readFileSync(path.join(this.dir, name + '.svg')));
 
