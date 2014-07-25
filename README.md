@@ -73,6 +73,10 @@ An string to be replaced with the icons definitions. The default is ```<!-- icon
 
 A function which will receive every icon name and should return the desired CSS class name. The default will return just ```icon```.
 
+### injectOnlyUsedIcons
+
+A boolean to indicate if you want to inject only the icons found in the replace process or all the SVG files in the icon's dir. Default is ```true```
+
 ### external
 
 A function which will receive every icon name and should return the desired path to the icons defs, useful to keep those in an external file (and share them between documents, [see this](http://css-tricks.com/svg-use-external-source/)). The default will return just an empty string, meaning that the icons are supposed to be defined in the same document.

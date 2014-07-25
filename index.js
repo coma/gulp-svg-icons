@@ -2,6 +2,7 @@ const PLUGIN_NAME = 'gulp-svg-icons';
 
 var fs     = require('fs');
 var path   = require('path');
+var glob   = require('glob');
 var extend = require('node.extend');
 var gutil  = require('gulp-util');
 var map    = require('map-stream');
@@ -21,13 +22,14 @@ var Icons = function(dir, options) {
 	error(fs.existsSync(dir), 'iconsDir path not found (' + dir + ')', true);
 
 	var settings = extend({
-		prefix     : 'icon',
-		placeholder: '<!-- icons -->',
-		style      : function(name) {
+		injectOnlyUsedIcons: true,
+		prefix             : 'icon',
+		placeholder        : '<!-- icons -->',
+		style              : function(name) {
 
 			return 'icon';
 		},
-		external   : function(name) {
+		external           : function(name) {
 
 			return '';
 		}
@@ -50,8 +52,17 @@ var Icons = function(dir, options) {
 
 Icons.prototype._init = function(name) {
 
-	this._icons = '';
-	this._collected = [];
+	var self = this;
+	self._icons = '';
+	self._collected = [];
+
+	if (!self.settings.injectOnlyUsedIcons) {
+
+		glob.sync(path.join(self.dir, '*.svg')).forEach(function(file) {
+
+			self._collect(path.basename(file, '.svg'));
+		});
+	}
 };
 
 Icons.prototype._collect = function(name) {
@@ -85,7 +96,11 @@ Icons.prototype.replace = function() {
 		file.contents = new Buffer(contents.replace(/<icon-([a-z0-9\-]+)(?:\s+class="([a-z0-9\-\_ ]*)")?\/?>(?:\s*<\/icon-[a-z0-9\-]+>)?/gi, function(match, name, style) {
 
 			style = style ? ' ' + style : '';
-			self._collect(name);
+
+			if (self.settings.injectOnlyUsedIcons) {
+
+				self._collect(name);
+			}
 
 			return [
 				'<svg class="',

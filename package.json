@@ -2,7 +2,7 @@
     "name"           : "gulp-svg-icons",
     "description"    : "Inserting SVG icons was never so easy.",
     "homepage"       : "https://github.com/coma/gulp-svg-icons",
-    "version"        : "0.5.4",
+    "version"        : "0.6.0",
     "license"        : "MIT",
     "private"        : false,
     "main"           : "index.js",
@@ -14,8 +14,9 @@
     ],
     "dependencies": {
         "node.extend": "~1",
-        "gulp-util"  : "~2",
-        "map-stream" : "~0"
+        "gulp-util"  : "~3",
+        "map-stream" : "~0",
+        "glob"       : "~4"
     },
     "devDependencies": {
         "mocha"      : "~1",
